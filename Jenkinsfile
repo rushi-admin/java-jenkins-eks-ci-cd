@@ -5,9 +5,9 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr: '20'))
   }
   parameters {
-    string(name: 'DOCKERHUB_REPO', defaultValue: 'yourdockerhubuser/java-eks-demo', description: 'DockerHub repo, e.g., username/reponame')
-    string(name: 'EKS_CLUSTER', defaultValue: 'your-eks-cluster', description: 'EKS cluster name')
-    string(name: 'AWS_REGION', defaultValue: 'ap-south-1', description: 'AWS region for the cluster')
+    string(name: 'DOCKERHUB_REPO', defaultValue: 'rushiadmin/java-eks-demo', description: 'DockerHub repo, e.g., username/reponame')
+    string(name: 'EKS_CLUSTER', defaultValue: 'srv6-va-dev', description: 'EKS cluster name')
+    string(name: 'AWS_REGION', defaultValue: 'us-west-2', description: 'AWS region for the cluster')
     string(name: 'K8S_NAMESPACE', defaultValue: 'demo', description: 'Kubernetes namespace to deploy into')
   }
   environment {
@@ -69,7 +69,7 @@ pipeline {
         sh "kubectl get ns ${params.K8S_NAMESPACE} || kubectl create ns ${params.K8S_NAMESPACE}"
         sh "kubectl apply -n ${params.K8S_NAMESPACE} -f k8s/"
         sh "kubectl rollout status deployment/demo-deployment -n ${params.K8S_NAMESPACE} --timeout=180s"
-        sh "echo 'Service hostname:' && kubectl get svc -n ${params.K8S_NAMESPACE} demo-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}{"\n"}' || true"
+        sh "echo 'Service hostname:' && kubectl get svc -n ${params.K8S_NAMESPACE} demo-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' || true"
       }
     }
   }
